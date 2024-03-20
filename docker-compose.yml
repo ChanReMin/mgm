@@ -1,0 +1,41 @@
+version: "3.8"
+services:
+  jenkins-docker:
+    privileged: true
+    image: docker:dind
+    restart: on-failure
+    command: --storage-driver=overlay2
+    env_file:
+      - .env
+    ports:
+      - 2376:2376
+    volumes:
+      - ./jenkins-docker-certs:/certs/client
+      - ./jenkins-data:/var/jenkins_home
+    networks:
+      - jenkins
+
+  jenkins:
+    # build: .
+    image: myjenkins-blueocean:1.0.0
+    restart: on-failure
+    env_file:
+      - .env
+    privileged: true
+    user: root
+    ports:
+      - 8080:8080
+      - 50000:50000
+    container_name: jenkins
+    networks:
+      - jenkins
+    volumes:
+      - ./jenkins-data:/var/jenkins_home
+      - ./jenkins-docker-certs:/certs/client:ro
+      # - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - jenkins-docker
+
+networks:
+  jenkins:
+    driver: bridge

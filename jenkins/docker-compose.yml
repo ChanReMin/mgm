@@ -16,13 +16,12 @@ services:
       - jenkins
 
   jenkins:
-    # build: .
-    image: myjenkins-blueocean:1.0.0
+    image: myjenkins-blueocean:2.0.0
     restart: on-failure
     env_file:
       - .env
     privileged: true
-    user: root
+    user: jenkins
     ports:
       - 8080:8080
       - 50000:50000

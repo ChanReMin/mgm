@@ -1,4 +1,4 @@
-/jenkins-data
-/jenkins-docker-certs
+*/jenkins-data
+*/jenkins-docker-certs
 node_modules
 *.pem

@@ -39,7 +39,7 @@ pipeline {
                     withBuildConfiguration {
                         sshagent(credentials: [SSH_ID_REF]) {
                             sh 'echo "Deploying docker image to EC2"'
-                            def dockerCmd = 'docker run -p 8080:8080 -d longtch/todo-nodejs:1.0.0'
+                            def dockerCmd = 'docker run -p 80:8000 -d longtch/todo-nodejs:1.0.0'
                             sh "ssh -o StrictHostKeyChecking=no ec2-user@54.255.189.172 ${dockerCmd}"
                         }
                     }

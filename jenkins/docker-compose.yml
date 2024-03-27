@@ -21,7 +21,7 @@ services:
     env_file:
       - .env
     privileged: true
-    user: jenkins
+    user: root
     ports:
       - 8080:8080
       - 50000:50000

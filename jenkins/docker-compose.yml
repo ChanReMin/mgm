@@ -5,21 +5,26 @@ services:
     image: docker:dind
     restart: on-failure
     command: --storage-driver=overlay2
-    env_file:
-      - .env
+    environment:
+      - DOCKER_TLS_CERTDIR=/certs
     ports:
       - 2376:2376
+    container_name: docker
     volumes:
       - ./jenkins-docker-certs:/certs/client
       - ./jenkins-data:/var/jenkins_home
     networks:
-      - jenkins
+      jenkins:
+        aliases:
+          - docker
 
   jenkins:
     image: myjenkins-blueocean:2.0.0
     restart: on-failure
-    env_file:
-      - .env
+    environment:
+      - DOCKER_HOST=tcp://docker:2376
+      - DOCKER_CERT_PATH=/certs/client
+      - DOCKER_TLS_VERIFY=1
     privileged: true
     user: root
     ports:

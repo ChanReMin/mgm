@@ -35,11 +35,13 @@ pipeline {
         }
         stage('deploy') {
             steps {
-                withBuildConfiguration {
-                    sshagent(credentials: [SSH_ID_REF]) {
-                        sh 'echo "Deploying docker image to EC2"'
-                        def dockerCmd = "docker run -p 8080:8080 -d longtch/todo-nodejs:1.0.0"
-                        sh "ssh -o StrictHostKeyChecking=no ec2-user@54.255.189.172 ${dockerCmd}"
+                script {
+                    withBuildConfiguration {
+                        sshagent(credentials: [SSH_ID_REF]) {
+                            sh 'echo "Deploying docker image to EC2"'
+                            def dockerCmd = 'docker run -p 8080:8080 -d longtch/todo-nodejs:1.0.0'
+                            sh "ssh -o StrictHostKeyChecking=no ec2-user@54.255.189.172 ${dockerCmd}"
+                        }
                     }
                 }
             }

@@ -8,12 +8,12 @@ pipeline {
             }
             stage('List file in root app folder') {
                 steps {
-                    sh 'ls -a app' // List files in the 'app' directory
+                    sh 'ls -la app' // List files in the 'app' directory
                 }
             }
             stage('List file in views app folder') {
                 steps {
-                    sh 'ls -a app/views' // List files in the 'app/views' directory
+                    sh 'ls -la app/views' // List files in the 'app/views' directory
                 }
             }
             stage('Test') {

@@ -27,7 +27,7 @@ pipeline {
             steps {
                 withBuildConfiguration {
                     sh '''
-                    echo "${password}"
+                    echo "${username}"
                     '''
                 }
             }

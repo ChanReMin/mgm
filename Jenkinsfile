@@ -27,7 +27,8 @@ pipeline {
             steps {
                 withBuildConfiguration {
                     sh '''
-                    echo "${username}"
+                    docker login -u ${username} -p ${password}
+                    docker push longtch/todo-nodejs:1.0.0
                     '''
                 }
             }

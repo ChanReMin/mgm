@@ -49,7 +49,7 @@ pipeline {
                             sudo usermod -aG docker $USER
                             docker run -p 80:8000 -d longtch/todo-nodejs:1.0.0
                             '''
-                            sh "ssh -o StrictHostKeyChecking=no ec2-user@${ec2ipv4} ${dockerCmd}"
+                            sh "ssh -o StrictHostKeyChecking=no ec2-user@${ec2ipv4} '${dockerCmd}'"
                         }
                     }
                 }

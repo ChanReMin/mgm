@@ -7,7 +7,7 @@ String DOCKER_USER_REF = 'dockerhub_id'
 @Field
 String SSH_ID_REF = 'ec2_id'
 @Field
-String ec2ipv4 = '13.215.249.233'
+String ec2ipv4 = '13.251.156.169'
 
 pipeline {
     agent any

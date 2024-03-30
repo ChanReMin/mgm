@@ -43,7 +43,7 @@ pipeline {
                             sh 'echo "Deploying docker image to EC2"'
                             def dockerCmd = '''
                             sudo yum update -y
-                            sudo yum install docker.io -y
+                            sudo yum install docker -y
                             sudo systemctl start docker
                             sudo systemctl enable docker
                             sudo usermod -aG docker $USER

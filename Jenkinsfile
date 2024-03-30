@@ -6,8 +6,6 @@ import groovy.transform.Field
 String DOCKER_USER_REF = 'dockerhub_id'
 @Field
 String SSH_ID_REF = 'ec2_id'
-@Field
-String ec2ipv4 = '13.229.99.110'
 
 pipeline {
     agent any
@@ -41,7 +39,8 @@ pipeline {
                     withBuildConfiguration {
                         sshagent(credentials: [SSH_ID_REF]) {
                             sh 'echo "Deploying docker image to EC2"'
-                            def dockerCmd = '''
+                            def checkDockerCmd = 'sudo systemctl status docker'
+                            def installCmd = '''
                             sudo yum update -y
                             sudo yum install docker -y
                             sudo systemctl start docker
@@ -50,6 +49,12 @@ pipeline {
                             sudo chmod -R 777 /var/run/docker.sock
                             docker run -p 80:8000 -d longtch/todo-nodejs:1.0.0
                             '''
+                            def dockerCmd = 'docker run -p 80:8000 -d longtch/todo-nodejs:1.0.0'
+
+                            def ret = sh(script: "ssh -o StrictHostKeyChecking=no ec2-user@${ec2ipv4} '${checkDockerCmd}'", returnStdout: true)
+                            if (ret.contains('docker.service could not be found')) {
+                                sh "ssh -o StrictHostKeyChecking=no ec2-user@${ec2ipv4} '${installCmd}'"
+                            }
                             sh "ssh -o StrictHostKeyChecking=no ec2-user@${ec2ipv4} '${dockerCmd}'"
                         }
                     }
@@ -60,7 +65,7 @@ pipeline {
 }
 
 void withBuildConfiguration(Closure body) {
-    withCredentials([usernamePassword(credentialsId: DOCKER_USER_REF, usernameVariable: 'username', passwordVariable: 'password')]) {
+    withCredentials([usernamePassword(credentialsId: DOCKER_USER_REF, usernameVariable: 'username', passwordVariable: 'password'), string(credentialsId: 'todo-ec2-ipv4', variable: 'ec2ipv4')]) {
         body()
     }
 }

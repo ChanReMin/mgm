@@ -39,22 +39,14 @@ pipeline {
                     withBuildConfiguration {
                         sshagent(credentials: [SSH_ID_REF]) {
                             sh 'echo "Deploying docker image to EC2"'
-                            def checkDockerCmd = 'sudo systemctl status docker'
-                            def installCmd = '''
+                            def dockerCmd = '''
                             sudo yum update -y
                             sudo yum install docker -y
                             sudo systemctl start docker
                             sudo systemctl enable docker
                             sudo usermod -aG docker ${whoami}
-                            sudo chmod -R 777 /var/run/docker.sock
                             docker run -p 80:8000 -d longtch/todo-nodejs:1.0.0
                             '''
-                            def dockerCmd = 'docker run -p 80:8000 -d longtch/todo-nodejs:1.0.0'
-
-                            def ret = sh(script: "ssh -o StrictHostKeyChecking=no ec2-user@${ec2ipv4} '${checkDockerCmd}'", returnStdout: true)
-                            if (ret.contains('docker.service could not be found')) {
-                                sh "ssh -o StrictHostKeyChecking=no ec2-user@${ec2ipv4} '${installCmd}'"
-                            }
                             sh "ssh -o StrictHostKeyChecking=no ec2-user@${ec2ipv4} '${dockerCmd}'"
                         }
                     }

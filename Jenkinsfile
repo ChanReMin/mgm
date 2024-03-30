@@ -46,7 +46,7 @@ pipeline {
                             sudo yum install docker -y
                             sudo systemctl start docker
                             sudo systemctl enable docker
-                            sudo usermod -aG docker $USER
+                            sudo usermod -aG docker ${whoami}
                             docker run -p 80:8000 -d longtch/todo-nodejs:1.0.0
                             '''
                             sh "ssh -o StrictHostKeyChecking=no ec2-user@${ec2ipv4} '${dockerCmd}'"

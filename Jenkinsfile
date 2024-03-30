@@ -6,6 +6,8 @@ import groovy.transform.Field
 String DOCKER_USER_REF = 'dockerhub_id'
 @Field
 String SSH_ID_REF = 'ec2_id'
+@Field
+String ec2ipv4 = '13.215.249.233'
 
 pipeline {
     agent any
@@ -47,7 +49,7 @@ pipeline {
                             sudo usermod -aG docker $USER
                             docker run -p 80:8000 -d longtch/todo-nodejs:1.0.0
                             '''
-                            sh "ssh -o StrictHostKeyChecking=no ec2-user@54.255.189.172 ${dockerCmd}"
+                            sh "ssh -o StrictHostKeyChecking=no ec2-user@${ec2ipv4} ${dockerCmd}"
                         }
                     }
                 }

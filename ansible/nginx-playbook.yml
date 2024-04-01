@@ -2,7 +2,5 @@
   user: root
   become_method: sudo
   gather_facts: False
-  vars_files:
-    - vars/front.yml
   roles:
     - nginx

@@ -5,19 +5,15 @@
 
 - name: NGINX --> Copy extra/sites configuration files
   become: true
-  template:
+  ansible.builtin.template:
     src: nginx.conf.j2
     dest: "{{ nginx_conf_dir }}"
-
+  notify: restart nginx
+  
 - name: create symlink
-  file:
+  ansible.builtin.file:
     src: "{{ nginx_conf_dir }}"
     dest: "{{ nginx_enable_dir }}"
     state: link
   become: true
-
-- name: Restart NginX - after config check
-  ansible.builtin.service:
-    name: nginx
-    state: restarted
-    enabled: true
+  

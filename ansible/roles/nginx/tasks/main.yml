@@ -1,0 +1,23 @@
+- name: Check NginX configuration
+  ansible.builtin.command: "nginx -t"
+  register: result
+  changed_when: "result.rc != 0"
+
+- name: NGINX --> Copy extra/sites configuration files
+  become: true
+  template:
+    src: nginx.conf.j2
+    dest: "{{ nginx_conf_dir }}"
+
+- name: create symlink
+  file:
+    src: "{{ nginx_conf_dir }}"
+    dest: "{{ nginx_enable_dir }}"
+    state: link
+  become: true
+
+- name: Restart NginX - after config check
+  ansible.builtin.service:
+    name: nginx
+    state: restarted
+    enabled: true

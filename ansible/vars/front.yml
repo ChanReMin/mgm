@@ -1,0 +1,3 @@
+nginx_conf_dir: "/etc/nginx/sites-available/longtruong.conf"
+nginx_enable_dir: "/etc/nginx/sites-enabled/longtruong.conf"
+nginx_server_name: "localhost"

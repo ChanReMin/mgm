@@ -1,0 +1,13 @@
+- name: My first play
+  hosts: localhost
+  tasks:
+    - name: This command will write to /tmp/longtruong
+      shell: mkdir -p /tmp/longtruong && cd /tmp/longtruong && echo "Truong Cong Hoang Long" > /tmp/longtruong/longtruong.txt
+
+    - name: Display resolv.conf contents
+      command: cat longtruong.txt chdir=/tmp/longtruong
+      register: command_output
+
+    - name: Print to console
+      debug:
+        msg: "{{command_output.stdout}}"

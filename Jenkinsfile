@@ -15,24 +15,24 @@ pipeline {
     }
 
     stages {
-        stage('build and test') {
-            steps {
-                sh '''
-                cd app
-                docker build -t longtch/todo-nodejs:1.0.0 .
-                '''
-            }
-        }
-        stage('Docker login and push docker image') {
-            steps {
-                withBuildConfiguration {
-                    sh '''
-                    docker login -u ${username} -p ${password}
-                    docker push longtch/todo-nodejs:1.0.0
-                    '''
-                }
-            }
-        }
+        // stage('build and test') {
+        //     steps {
+        //         sh '''
+        //         cd app
+        //         docker build -t longtch/todo-nodejs:1.0.0 .
+        //         '''
+        //     }
+        // }
+        // stage('Docker login and push docker image') {
+        //     steps {
+        //         withBuildConfiguration {
+        //             sh '''
+        //             docker login -u ${username} -p ${password}
+        //             docker push longtch/todo-nodejs:1.0.0
+        //             '''
+        //         }
+        //     }
+        // }
         stage('deploy') {
             steps {
                 script {
@@ -40,15 +40,15 @@ pipeline {
                         sshagent(credentials: [SSH_ID_REF]) {
                             sh 'echo "Deploying docker image to EC2"'
                             def dockerCmd = '''
-                            sudo yum update -y
-                            sudo yum install docker -y
+                            sudo apt update -y
+                            sudo apt install docker -y
                             sudo systemctl start docker
                             sudo systemctl enable docker
                             sudo usermod -aG docker ${whoami}
                             sudo chmod -R 777 /var/run/docker.sock
                             docker run -p 80:8000 -d longtch/todo-nodejs:1.0.0
                             '''
-                            sh "ssh -o StrictHostKeyChecking=no ec2-user@${ec2ipv4} '${dockerCmd}'"
+                            sh "ssh -o StrictHostKeyChecking=no root@${ec2ipv4} '${dockerCmd}'"
                         }
                     }
                 }
@@ -58,7 +58,7 @@ pipeline {
 }
 
 void withBuildConfiguration(Closure body) {
-    withCredentials([usernamePassword(credentialsId: DOCKER_USER_REF, usernameVariable: 'username', passwordVariable: 'password'), string(credentialsId: 'todo-ec2-ipv4', variable: 'ec2ipv4')]) {
+    withCredentials([string(credentialsId: 'todo-ec2-ipv4', variable: 'ec2ipv4')]) {
         body()
     }
 }

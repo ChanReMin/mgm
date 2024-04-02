@@ -46,7 +46,7 @@ pipeline {
                             sudo systemctl enable docker
                             sudo usermod -aG docker ${whoami}
                             sudo chmod -R 777 /var/run/docker.sock
-                            docker run -p 80:8000 -d longtch/todo-nodejs:1.0.0
+                            docker run -p 2810:8000 -d longtch/todo-nodejs:1.0.0
                             '''
                             sh "ssh -o StrictHostKeyChecking=no root@${ec2ipv4} '${dockerCmd}'"
                         }
